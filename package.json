@@ -1,0 +1,11 @@
+{
+  "name": "invite",
+  "private": true,
+  "version": "0.0.0",
+  "scripts": {
+    "dev": "concurrently -n admin,user -c blue,magenta \"npm run dev --prefix frontend/admin_web\" \"npm run dev --prefix frontend/user_pwa\""
+  },
+  "devDependencies": {
+    "concurrently": "^9.2.1"
+  }
+}
