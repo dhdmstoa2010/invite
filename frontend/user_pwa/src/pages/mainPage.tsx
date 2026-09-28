@@ -13,7 +13,6 @@ import {
 import FormField from '../components/FormField'
 import SubmitButton from '../components/SubmitButton'
 
-// 관리자 페이지(admin_web)는 별도 앱이라 외부 URL로 이동. 배포 시 VITE_ADMIN_URL로 지정
 const ADMIN_URL = import.meta.env.VITE_ADMIN_URL ?? 'http://localhost:5174'
 
 export default function MainPage() {
@@ -21,7 +20,6 @@ export default function MainPage() {
   const [name, setName] = useState('')
   const navigate = useNavigate()
 
-  // TODO: 학번/이름으로 초대장 조회 API 연동 후 응답의 초대 ID로 이동
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault()
     navigate('/invite/demo')

@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Page,
   Wrapper,
@@ -17,6 +18,7 @@ export default function LoginPage() {
   const [adminId, setAdminId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
@@ -25,6 +27,7 @@ export default function LoginPage() {
       return;
     }
     setError(null);
+    navigate("/my");
   };
 
   return (
@@ -63,11 +66,7 @@ export default function LoginPage() {
               <path d="M8 10.5V8a4 4 0 018 0v2.5" />
             </svg>
           </IconBadge>
-          <Description>
-            학생회 관리자만 접근할 수 있어요.
-            <br />
-            아이디와 비밀번호를 입력해주세요.
-          </Description>
+          <Description>아이디와 비밀번호를 입력해주세요.</Description>
 
           <FormField
             id="adminId"
