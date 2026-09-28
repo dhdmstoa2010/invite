@@ -19,7 +19,6 @@ export interface Invitation {
   /** ISO 8601 일시, 예: 2026-10-15T18:00:00+09:00 */
   date: string;
   place: string;
-  message?: string;
 }
 
 interface UserInvitePageProps {
@@ -54,7 +53,7 @@ export default function UserInvitePage({
   onAttend,
   onDecline,
 }: UserInvitePageProps) {
-  const { guestName, partyName, date, place, message } = invitation;
+  const { guestName, partyName, date, place } = invitation;
 
   return (
     <Page>
