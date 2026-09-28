@@ -109,22 +109,6 @@ export const SubmitButton = styled.button`
   }
 `
 
-export const AdminLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #3730a3;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
 export const Footer = styled.div`
   margin-top: auto;
   padding-top: 20px;

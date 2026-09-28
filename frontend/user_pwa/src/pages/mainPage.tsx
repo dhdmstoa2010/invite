@@ -6,14 +6,11 @@ import {
   Content,
   Title,
   Subtitle,
-  AdminLink,
   Footer,
   FooterLink,
 } from './styles/mainPage.style'
 import FormField from '../components/FormField'
 import SubmitButton from '../components/SubmitButton'
-
-const ADMIN_URL = import.meta.env.VITE_ADMIN_URL ?? 'http://localhost:5174'
 
 export default function MainPage() {
   const [studentId, setStudentId] = useState('')
@@ -54,8 +51,6 @@ export default function MainPage() {
           />
 
           <SubmitButton>초대장 확인하기</SubmitButton>
-
-          <AdminLink href={ADMIN_URL}>관리자이신가요? 현황판 보기 →</AdminLink>
         </Content>
 
         <Footer>
