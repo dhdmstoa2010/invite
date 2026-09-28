@@ -1,4 +1,6 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { loadInvitations } from "../storage/invitations";
 import {
   Content,
   TopBar,
@@ -90,7 +92,20 @@ const iconProps = {
 
 export default function MyPage() {
   const navigate = useNavigate();
-  const invitations = MOCK_INVITATIONS;
+  const invitations = useMemo<MyInvitation[]>(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const saved = loadInvitations().map<MyInvitation>((invitation) => ({
+      id: invitation.id,
+      partyName: invitation.partyName,
+      date: invitation.date,
+      place: invitation.place,
+      status: invitation.date >= today ? "active" : "closed",
+      attend: 0,
+      decline: 0,
+      pending: invitation.guests.length,
+    }));
+    return [...saved, ...MOCK_INVITATIONS];
+  }, []);
 
   const handleLogout = () => navigate("/");
 
