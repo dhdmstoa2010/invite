@@ -1,8 +1,8 @@
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import UserInvitePage from "./userInvitePage";
+import AttendCompletePage from "./attendCompletePage";
 import { MOCK_INVITATIONS } from "../mocks/invitations";
 
-export default function InviteRoute() {
+export default function AttendCompleteRoute() {
   const { inviteId = "" } = useParams();
   const navigate = useNavigate();
   const invitation = MOCK_INVITATIONS[inviteId];
@@ -10,10 +10,10 @@ export default function InviteRoute() {
   if (!invitation) return <Navigate to="/" replace />;
 
   return (
-    <UserInvitePage
+    <AttendCompletePage
       invitation={invitation}
-      onBack={() => navigate("/")}
-      onAttend={() => navigate(`/invite/${inviteId}/attended`)}
+      onHome={() => navigate("/")}
+      onChangeResponse={() => navigate(`/invite/${inviteId}`)}
     />
   );
 }
