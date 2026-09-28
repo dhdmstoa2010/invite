@@ -7,6 +7,7 @@ function App() {
     <BrowserRouter>
       <Routes>
         <Route path="/" element={<MainPage />} />
+        <Route path="/e/:eventId" element={<MainPage />} />
         <Route path="/invite/:inviteId" element={<InviteRoute />} />
         <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>

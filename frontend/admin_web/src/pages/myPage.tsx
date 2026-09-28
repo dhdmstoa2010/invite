@@ -1,4 +1,8 @@
+import { useMemo } from "react";
 import { useNavigate } from "react-router-dom";
+import { loadInvitations } from "../storage/invitations";
+import { formatDate } from "../utils/date";
+import { MOCK_INVITATIONS, countByStatus } from "../mocks/invitations";
 import {
   Content,
   TopBar,
@@ -31,51 +35,6 @@ interface MyInvitation {
   pending: number;
 }
 
-const MOCK_INVITATIONS: MyInvitation[] = [
-  {
-    id: "1",
-    partyName: "가을 생일파티",
-    date: "2026-10-15",
-    place: "학생회관 2층 라운지",
-    status: "active",
-    attend: 12,
-    decline: 3,
-    pending: 8,
-  },
-  {
-    id: "2",
-    partyName: "여름 동아리 정기모임",
-    date: "2026-07-02",
-    place: "동아리방 3",
-    status: "closed",
-    attend: 9,
-    decline: 1,
-    pending: 0,
-  },
-  {
-    id: "3",
-    partyName: "새 학기 환영회",
-    date: "2026-03-05",
-    place: "시청각실",
-    status: "closed",
-    attend: 18,
-    decline: 2,
-    pending: 1,
-  },
-];
-
-const WEEKDAYS = ["일", "월", "화", "수", "목", "금", "토"];
-
-function formatDate(ymd: string) {
-  const [y, m, d] = ymd.split("-").map(Number);
-  const date = new Date(y, m - 1, d);
-  if (Number.isNaN(date.getTime())) return ymd;
-
-  const mm = String(m).padStart(2, "0");
-  const dd = String(d).padStart(2, "0");
-  return `${y}.${mm}.${dd} (${WEEKDAYS[date.getDay()]})`;
-}
-
 const iconProps = {
   width: 14,
   height: 14,
@@ -90,7 +49,28 @@ const iconProps = {
 
 export default function MyPage() {
   const navigate = useNavigate();
-  const invitations = MOCK_INVITATIONS;
+  const invitations = useMemo<MyInvitation[]>(() => {
+    const today = new Date().toISOString().slice(0, 10);
+    const saved = loadInvitations().map<MyInvitation>((invitation) => ({
+      id: invitation.id,
+      partyName: invitation.partyName,
+      date: invitation.date,
+      place: invitation.place,
+      status: invitation.date >= today ? "active" : "closed",
+      attend: 0,
+      decline: 0,
+      pending: invitation.guests.length,
+    }));
+    const mocks = MOCK_INVITATIONS.map<MyInvitation>((invitation) => ({
+      id: invitation.id,
+      partyName: invitation.partyName,
+      date: invitation.date,
+      place: invitation.place,
+      status: invitation.date >= today ? "active" : "closed",
+      ...countByStatus(invitation.guests),
+    }));
+    return [...saved, ...mocks];
+  }, []);
 
   const handleLogout = () => navigate("/");
 
@@ -153,7 +133,10 @@ export default function MyPage() {
                   </Stat>
                 </Stats>
               </Info>
-              <BoardButton type="button">
+              <BoardButton
+                type="button"
+                onClick={() => navigate(`/invitations/${invitation.id}/board`)}
+              >
                 현황판 보기
                 <svg {...iconProps}>
                   <path d="M5 12h14M13 6l6 6-6 6" />
