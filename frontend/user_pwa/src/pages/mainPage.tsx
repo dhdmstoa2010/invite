@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, type FormEvent } from 'react'
+import { useNavigate } from 'react-router-dom'
 import {
   Page,
   Container,
@@ -15,11 +16,18 @@ import SubmitButton from '../components/SubmitButton'
 export default function MainPage() {
   const [studentId, setStudentId] = useState('')
   const [name, setName] = useState('')
+  const navigate = useNavigate()
+
+  // TODO: 학번/이름으로 초대장 조회 API 연동 후 응답의 초대 ID로 이동
+  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault()
+    navigate('/invite/demo')
+  }
 
   return (
     <Page>
       <Container>
-        <Content>
+        <Content onSubmit={handleSubmit}>
           <Title>모임초대</Title>
           <Subtitle>
             학번과 이름을 입력하면
