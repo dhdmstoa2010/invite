@@ -1,4 +1,5 @@
 import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Page,
   Wrapper,
@@ -11,15 +12,14 @@ import {
 } from "./styles/loginPage.style";
 import FormField from "../components/FormField";
 
-// 메인(user_pwa)은 별도 앱이라 외부 URL로 이동. 배포 시 VITE_USER_URL로 지정
 const USER_URL = import.meta.env.VITE_USER_URL ?? "http://localhost:5173";
 
 export default function LoginPage() {
   const [adminId, setAdminId] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
+  const navigate = useNavigate();
 
-  // TODO: 관리자 로그인 API 연동 후 실패 시 setError, 성공 시 현황판으로 이동
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!adminId.trim() || !password) {
@@ -27,6 +27,7 @@ export default function LoginPage() {
       return;
     }
     setError(null);
+    navigate("/my");
   };
 
   return (
@@ -65,11 +66,7 @@ export default function LoginPage() {
               <path d="M8 10.5V8a4 4 0 018 0v2.5" />
             </svg>
           </IconBadge>
-          <Description>
-            학생회 관리자만 접근할 수 있어요.
-            <br />
-            아이디와 비밀번호를 입력해주세요.
-          </Description>
+          <Description>아이디와 비밀번호를 입력해주세요.</Description>
 
           <FormField
             id="adminId"

@@ -9,7 +9,6 @@ export const Page = styled.div`
   background: #f3f4fa;
 `
 
-/* 링크는 카드 위에 띄워서 카드 자체가 화면 정중앙에 오도록 한다 */
 export const Wrapper = styled.div`
   position: relative;
   width: 100%;
