@@ -1,26 +1,24 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, type FormEvent } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Page,
   Container,
   Content,
   Title,
   Subtitle,
-  Footer,
-  FooterLink,
-} from './styles/mainPage.style'
-import FormField from '../components/FormField'
-import SubmitButton from '../components/SubmitButton'
+} from "./styles/mainPage.style";
+import FormField from "../components/FormField";
+import SubmitButton from "../components/SubmitButton";
 
 export default function MainPage() {
-  const [studentId, setStudentId] = useState('')
-  const [name, setName] = useState('')
-  const navigate = useNavigate()
+  const [studentId, setStudentId] = useState("");
+  const [name, setName] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    navigate('/invite/demo')
-  }
+    event.preventDefault();
+    navigate("/invite/demo");
+  };
 
   return (
     <Page>
@@ -52,11 +50,7 @@ export default function MainPage() {
 
           <SubmitButton>초대장 확인하기</SubmitButton>
         </Content>
-
-        <Footer>
-          <FooterLink href="#guide">이용 안내 보기</FooterLink>
-        </Footer>
       </Container>
     </Page>
-  )
+  );
 }
