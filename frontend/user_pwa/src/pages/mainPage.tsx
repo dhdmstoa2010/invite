@@ -13,6 +13,9 @@ import {
 import FormField from '../components/FormField'
 import SubmitButton from '../components/SubmitButton'
 
+// 관리자 페이지(admin_web)는 별도 앱이라 외부 URL로 이동. 배포 시 VITE_ADMIN_URL로 지정
+const ADMIN_URL = import.meta.env.VITE_ADMIN_URL ?? 'http://localhost:5174'
+
 export default function MainPage() {
   const [studentId, setStudentId] = useState('')
   const [name, setName] = useState('')
@@ -54,7 +57,7 @@ export default function MainPage() {
 
           <SubmitButton>초대장 확인하기</SubmitButton>
 
-          <AdminLink href="#admin">관리자이신가요? 현황판 보기 →</AdminLink>
+          <AdminLink href={ADMIN_URL}>관리자이신가요? 현황판 보기 →</AdminLink>
         </Content>
 
         <Footer>

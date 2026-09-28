@@ -1,0 +1,144 @@
+import styled from '@emotion/styled'
+
+export const Page = styled.div`
+  min-height: 100dvh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 16px;
+  background: #f3f4fa;
+`
+
+/* 링크는 카드 위에 띄워서 카드 자체가 화면 정중앙에 오도록 한다 */
+export const Wrapper = styled.div`
+  position: relative;
+  width: 100%;
+  max-width: 368px;
+`
+
+export const BackLink = styled.a`
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 15px;
+  color: #4b5060;
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+`
+
+export const Card = styled.form`
+  padding: 34px 32px 32px;
+  background: #fff;
+  border: 1px solid #e3e5ee;
+  border-radius: 24px;
+`
+
+export const IconBadge = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 42px;
+  height: 42px;
+  margin-bottom: 8px;
+  color: #3f4bd6;
+  background: #eeeffd;
+  border-radius: 12px;
+`
+
+export const Description = styled.p`
+  margin: 0 0 22px;
+  font-size: 15px;
+  line-height: 1.5;
+  color: #4b5060;
+`
+
+export const Field = styled.div`
+  margin-bottom: 16px;
+`
+
+export const Label = styled.label`
+  display: block;
+  margin-bottom: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  color: #14142b;
+`
+
+export const Input = styled.input`
+  width: 100%;
+  padding: 14px 16px;
+  font-size: 15px;
+  color: #14142b;
+  background: #fff;
+  border: 1px solid #d5d8e6;
+  border-radius: 12px;
+  outline: none;
+  transition: border-color 0.15s;
+
+  &::placeholder {
+    color: #8c90a3;
+  }
+
+  &:focus {
+    border-color: #3f4bd6;
+  }
+
+  &[aria-invalid='true'] {
+    border-color: #d9686f;
+  }
+`
+
+export const ErrorBox = styled.div`
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin: 4px 0 16px;
+  padding: 12px 14px;
+  font-size: 14px;
+  line-height: 1.5;
+  color: #b3262d;
+  background: #f9e8e8;
+  border-radius: 10px;
+
+  svg {
+    flex-shrink: 0;
+    margin-top: 3px;
+  }
+`
+
+export const SubmitButton = styled.button`
+  width: 100%;
+  padding: 15px;
+  font-size: 16px;
+  font-weight: 700;
+  color: #fff;
+  background: #3f4bd6;
+  border: none;
+  border-radius: 12px;
+  cursor: pointer;
+  transition: opacity 0.15s;
+
+  &:hover:not(:disabled) {
+    opacity: 0.9;
+  }
+
+  &:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+`
+
+export const HelpText = styled.p`
+  margin: 20px 0 0;
+  font-size: 13px;
+  line-height: 1.6;
+  text-align: center;
+  color: #6b7090;
+  word-break: keep-all;
+`
