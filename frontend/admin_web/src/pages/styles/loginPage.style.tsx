@@ -33,6 +33,8 @@ export const BackLink = styled.a`
 `
 
 export const Card = styled.form`
+  width: 100%;
+  max-width: 368px;
   padding: 34px 32px 32px;
   background: #fff;
   border: 1px solid #e3e5ee;

@@ -11,7 +11,6 @@ import {
 } from "./styles/loginPage.style";
 import FormField from "../components/FormField";
 
-// 메인(user_pwa)은 별도 앱이라 외부 URL로 이동. 배포 시 VITE_USER_URL로 지정
 const USER_URL = import.meta.env.VITE_USER_URL ?? "http://localhost:5173";
 
 export default function LoginPage() {
@@ -19,7 +18,6 @@ export default function LoginPage() {
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
 
-  // TODO: 관리자 로그인 API 연동 후 실패 시 setError, 성공 시 현황판으로 이동
   const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     if (!adminId.trim() || !password) {
