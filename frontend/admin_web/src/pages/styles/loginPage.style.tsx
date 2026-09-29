@@ -1,4 +1,5 @@
 import styled from '@emotion/styled'
+import { css } from '@emotion/react'
 
 export const Page = styled.div`
   min-height: 100dvh;
@@ -69,7 +70,7 @@ export const Label = styled.label`
   color: #14142b;
 `
 
-export const Input = styled.input`
+const fieldStyle = css`
   width: 100%;
   padding: 14px 16px;
   font-size: 15px;
@@ -91,6 +92,14 @@ export const Input = styled.input`
   &[aria-invalid='true'] {
     border-color: #d9686f;
   }
+`
+
+export const Input = styled.input`
+  ${fieldStyle}
+`
+
+export const Select = styled.select`
+  ${fieldStyle}
 `
 
 export const ErrorBox = styled.div`

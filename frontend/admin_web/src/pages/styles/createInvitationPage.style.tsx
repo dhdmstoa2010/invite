@@ -58,7 +58,7 @@ export const CardTitle = styled.h2`
 
 export const InfoGrid = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr 1fr 2fr;
+  grid-template-columns: 1.3fr 1.6fr 1.4fr 1.1fr;
   gap: 16px;
 
   @media (max-width: 860px) {
@@ -71,6 +71,17 @@ export const InfoGrid = styled.div`
 
 export const FieldBox = styled(Field)`
   margin: 0;
+`;
+
+export const SelectRow = styled.div`
+  display: flex;
+  gap: 8px;
+
+  select {
+    min-width: 0;
+    padding-inline: 10px;
+    cursor: pointer;
+  }
 `;
 
 export const QrCard = styled.section`

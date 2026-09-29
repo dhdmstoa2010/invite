@@ -1,4 +1,4 @@
-import { useRef, useState, type ChangeEvent, type FormEvent } from "react";
+import { useMemo, useRef, useState, type ChangeEvent, type FormEvent } from "react";
 import { useNavigate } from "react-router-dom";
 import { QRCodeSVG } from "qrcode.react";
 import {
@@ -37,7 +37,9 @@ import {
 } from "./styles/createInvitationPage.style";
 import { ErrorBox, Label, Input } from "./styles/loginPage.style";
 import FormField from "../components/FormField";
-import { saveInvitation } from "../storage/invitations";
+import { DateSelect, TimeSelect } from "../components/DateTimeSelect";
+import { createEvent } from "../api/events";
+import { slugify } from "../utils/slug";
 
 interface Guest {
   key: number;
@@ -109,10 +111,12 @@ export default function CreateInvitationPage() {
     text: string;
   } | null>(null);
   const [error, setError] = useState<string | null>(null);
-  // TODO: 초대장 생성 API 연동 시 서버에서 발급한 초대장 id로 교체
-  const [inviteId] = useState(() =>
-    crypto.randomUUID().replaceAll("-", "").slice(0, 10),
-  );
+  const [saving, setSaving] = useState(false);
+  const idSuffixRef = useRef(crypto.randomUUID().replaceAll("-", "").slice(0, 4));
+  const inviteId = useMemo(() => {
+    const slug = slugify(partyName);
+    return slug ? `${slug}-${idSuffixRef.current}` : idSuffixRef.current;
+  }, [partyName]);
   const [copied, setCopied] = useState(false);
   const inviteUrl = `${USER_URL}/e/${inviteId}`;
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -198,7 +202,7 @@ export default function CreateInvitationPage() {
     }
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     if (!partyName.trim() || !date || !time || !place.trim()) {
       setError("모임 이름, 일시, 장소를 모두 입력해주세요.");
       return;
@@ -208,28 +212,27 @@ export default function CreateInvitationPage() {
       return;
     }
 
-    const saved = saveInvitation({
-      id: inviteId,
-      partyName: partyName.trim(),
-      date,
-      time,
-      place: place.trim(),
-      guests: guests.map(({ studentId, name, createdAt }) => ({
-        studentId,
-        name,
-        createdAt,
-      })),
-      createdAt: formatNow(),
-    });
-    if (!saved) {
-      setError(
-        "저장하지 못했어요. 브라우저 저장 공간을 확인하고 다시 시도해주세요.",
-      );
-      return;
+    setSaving(true);
+    try {
+      await createEvent({
+        id: inviteId,
+        partyName: partyName.trim(),
+        date,
+        time,
+        place: place.trim(),
+        guests: guests.map(({ studentId, name, createdAt }) => ({
+          studentId,
+          name,
+          createdAt,
+        })),
+      });
+      setError(null);
+      navigate("/my");
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "저장하지 못했어요.");
+    } finally {
+      setSaving(false);
     }
-
-    setError(null);
-    navigate("/my");
   };
 
   return (
@@ -251,20 +254,8 @@ export default function CreateInvitationPage() {
             value={partyName}
             onChange={(event) => setPartyName(event.target.value)}
           />
-          <FormField
-            id="date"
-            label="날짜"
-            type="date"
-            value={date}
-            onChange={(event) => setDate(event.target.value)}
-          />
-          <FormField
-            id="time"
-            label="시간"
-            type="time"
-            value={time}
-            onChange={(event) => setTime(event.target.value)}
-          />
+          <DateSelect id="date" label="날짜" value={date} onChange={setDate} />
+          <TimeSelect id="time" label="시간" value={time} onChange={setTime} />
           <FormField
             id="place"
             label="장소"
@@ -423,8 +414,8 @@ export default function CreateInvitationPage() {
         <CancelButton type="button" onClick={() => navigate("/my")}>
           취소
         </CancelButton>
-        <SaveButton type="button" onClick={handleSave}>
-          저장하기
+        <SaveButton type="button" onClick={handleSave} disabled={saving}>
+          {saving ? "저장 중..." : "저장하기"}
         </SaveButton>
       </Actions>
     </Content>

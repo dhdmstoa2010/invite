@@ -1,8 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { loadInvitations } from "../storage/invitations";
 import { formatDate } from "../utils/date";
-import { MOCK_INVITATIONS, countByStatus } from "../mocks/invitations";
+import { listEvents, countByStatus } from "../api/events";
 import {
   Content,
   TopBar,
@@ -49,27 +48,25 @@ const iconProps = {
 
 export default function MyPage() {
   const navigate = useNavigate();
-  const invitations = useMemo<MyInvitation[]>(() => {
+  const [invitations, setInvitations] = useState<MyInvitation[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
     const today = new Date().toISOString().slice(0, 10);
-    const saved = loadInvitations().map<MyInvitation>((invitation) => ({
-      id: invitation.id,
-      partyName: invitation.partyName,
-      date: invitation.date,
-      place: invitation.place,
-      status: invitation.date >= today ? "active" : "closed",
-      attend: 0,
-      decline: 0,
-      pending: invitation.guests.length,
-    }));
-    const mocks = MOCK_INVITATIONS.map<MyInvitation>((invitation) => ({
-      id: invitation.id,
-      partyName: invitation.partyName,
-      date: invitation.date,
-      place: invitation.place,
-      status: invitation.date >= today ? "active" : "closed",
-      ...countByStatus(invitation.guests),
-    }));
-    return [...saved, ...mocks];
+    listEvents()
+      .then((events) => {
+        setInvitations(
+          events.map((event) => ({
+            id: event.id,
+            partyName: event.partyName,
+            date: event.date,
+            place: event.place,
+            status: event.date >= today ? "active" : "closed",
+            ...countByStatus(event.guests),
+          })),
+        );
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const handleLogout = () => navigate("/");
@@ -96,7 +93,9 @@ export default function MyPage() {
         </Actions>
       </TopBar>
 
-      {invitations.length === 0 ? (
+      {loading ? (
+        <Empty>불러오는 중...</Empty>
+      ) : invitations.length === 0 ? (
         <Empty>아직 만든 초대장이 없어요.</Empty>
       ) : (
         <List>
