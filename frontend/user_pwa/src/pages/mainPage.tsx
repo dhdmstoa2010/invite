@@ -1,29 +1,49 @@
-import { useState, type FormEvent } from 'react'
-import { useNavigate } from 'react-router-dom'
+import { useState, type FormEvent } from "react";
+import { useNavigate, useParams } from "react-router-dom";
 import {
   Page,
   Container,
   Content,
   Title,
   Subtitle,
-  AdminLink,
-  Footer,
-  FooterLink,
-} from './styles/mainPage.style'
-import FormField from '../components/FormField'
-import SubmitButton from '../components/SubmitButton'
-
-const ADMIN_URL = import.meta.env.VITE_ADMIN_URL ?? 'http://localhost:5174'
+  ErrorBox,
+} from "./styles/mainPage.style";
+import FormField from "../components/FormField";
+import SubmitButton from "../components/SubmitButton";
+import { lookupGuest } from "../api/events";
+import { saveGuestIdentity } from "../utils/guestSession";
 
 export default function MainPage() {
-  const [studentId, setStudentId] = useState('')
-  const [name, setName] = useState('')
-  const navigate = useNavigate()
+  const [studentId, setStudentId] = useState("");
+  const [name, setName] = useState("");
+  const [error, setError] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
+  const { eventId } = useParams();
+  const navigate = useNavigate();
 
-  const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault()
-    navigate('/invite/demo')
-  }
+  const handleSubmit = async (event: FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    if (!eventId) {
+      setError("초대장 QR을 통해 접속해주세요.");
+      return;
+    }
+    if (!studentId.trim() || !name.trim()) {
+      setError("학번과 이름을 모두 입력해주세요.");
+      return;
+    }
+
+    setLoading(true);
+    try {
+      await lookupGuest(eventId, studentId.trim(), name.trim());
+      saveGuestIdentity(eventId, { studentId: studentId.trim(), name: name.trim() });
+      setError(null);
+      navigate(`/invite/${eventId}`);
+    } catch (err) {
+      setError(err instanceof Error ? err.message : "초대장을 확인하지 못했어요.");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <Page>
@@ -53,15 +73,13 @@ export default function MainPage() {
             onChange={(event) => setName(event.target.value)}
           />
 
-          <SubmitButton>초대장 확인하기</SubmitButton>
+          {error && <ErrorBox role="alert">{error}</ErrorBox>}
 
-          <AdminLink href={ADMIN_URL}>관리자이신가요? 현황판 보기 →</AdminLink>
+          <SubmitButton disabled={loading}>
+            {loading ? "확인 중..." : "초대장 확인하기"}
+          </SubmitButton>
         </Content>
-
-        <Footer>
-          <FooterLink href="#guide">이용 안내 보기</FooterLink>
-        </Footer>
       </Container>
     </Page>
-  )
+  );
 }

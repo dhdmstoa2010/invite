@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import UserInvitePage, { type Invitation } from "./userInvitePage";
-import { lookupGuest, submitRsvp } from "../api/events";
+import AttendCompletePage from "./attendCompletePage";
+import type { Invitation } from "./userInvitePage";
+import { lookupGuest } from "../api/events";
 import { loadGuestIdentity } from "../utils/guestSession";
 
-export default function InviteRoute() {
+export default function AttendCompleteRoute() {
   const { inviteId = "" } = useParams();
   const navigate = useNavigate();
   const identity = loadGuestIdentity(inviteId);
@@ -28,27 +29,14 @@ export default function InviteRoute() {
       .catch(() => setNotFound(true));
   }, [inviteId, identity]);
 
-  if (notFound) return <Navigate to={`/e/${inviteId}`} replace />;
+  if (notFound) return <Navigate to="/" replace />;
   if (!invitation) return null;
 
-  const handleAttend = async () => {
-    if (!identity) return;
-    await submitRsvp(inviteId, identity.studentId, identity.name, "attend");
-    navigate(`/invite/${inviteId}/attended`);
-  };
-
-  const handleDecline = async () => {
-    if (!identity) return;
-    await submitRsvp(inviteId, identity.studentId, identity.name, "decline");
-    navigate("/");
-  };
-
   return (
-    <UserInvitePage
+    <AttendCompletePage
       invitation={invitation}
-      onBack={() => navigate("/")}
-      onAttend={handleAttend}
-      onDecline={handleDecline}
+      onHome={() => navigate("/")}
+      onChangeResponse={() => navigate(`/invite/${inviteId}`)}
     />
   );
 }

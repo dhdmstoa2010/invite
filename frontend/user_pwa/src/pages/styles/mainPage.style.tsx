@@ -1,11 +1,11 @@
-import styled from '@emotion/styled'
+import styled from "@emotion/styled";
 
 export const Page = styled.div`
   min-height: 100dvh;
   display: flex;
   justify-content: center;
   background: #e9eaf2;
-`
+`;
 
 export const Container = styled.div`
   display: flex;
@@ -16,29 +16,29 @@ export const Container = styled.div`
   padding: 40px 24px 24px;
   box-sizing: border-box;
   background: #f8f9fc;
-`
+`;
 
 export const Content = styled.form`
   flex: 1;
-`
+`;
 
 export const Title = styled.h1`
   margin: 0 0 12px;
   font-size: 24px;
   font-weight: 700;
   color: #14142b;
-`
+`;
 
 export const Subtitle = styled.p`
   margin: 0 0 32px;
   font-size: 15px;
   line-height: 1.6;
   color: #6b7280;
-`
+`;
 
 export const Field = styled.div`
   margin-bottom: 20px;
-`
+`;
 
 export const Label = styled.label`
   display: block;
@@ -46,7 +46,7 @@ export const Label = styled.label`
   font-size: 14px;
   font-weight: 700;
   color: #14142b;
-`
+`;
 
 export const Input = styled.input`
   box-sizing: border-box;
@@ -67,7 +67,7 @@ export const Input = styled.input`
   &:focus {
     border-color: #3730a3;
   }
-`
+`;
 
 export const ErrorBox = styled.div`
   display: flex;
@@ -80,12 +80,12 @@ export const ErrorBox = styled.div`
   color: #dc4c58;
   font-size: 13px;
   line-height: 1.6;
-`
+`;
 
 export const ErrorIcon = styled.span`
   flex-shrink: 0;
   margin-top: 1px;
-`
+`;
 
 export const SubmitButton = styled.button`
   width: 100%;
@@ -107,37 +107,4 @@ export const SubmitButton = styled.button`
     opacity: 0.5;
     cursor: not-allowed;
   }
-`
-
-export const AdminLink = styled.a`
-  display: inline-flex;
-  align-items: center;
-  gap: 4px;
-  margin-top: 20px;
-  font-size: 14px;
-  font-weight: 700;
-  color: #3730a3;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
-
-export const Footer = styled.div`
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid #e5e7eb;
-`
-
-export const FooterLink = styled.a`
-  font-size: 13px;
-  color: #6b7280;
-  text-decoration: none;
-  cursor: pointer;
-
-  &:hover {
-    text-decoration: underline;
-  }
-`
+`;

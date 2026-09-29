@@ -1,12 +1,7 @@
-import { useMemo } from "react";
+import { useEffect, useState } from "react";
 import { Navigate, useNavigate, useParams } from "react-router-dom";
-import { loadInvitations } from "../storage/invitations";
-import {
-  MOCK_INVITATIONS,
-  countByStatus,
-  type GuestResponse,
-  type ResponseStatus,
-} from "../mocks/invitations";
+import { QRCodeSVG } from "qrcode.react";
+import { getEvent, countByStatus, type ApiGuest, type RsvpStatus } from "../api/events";
 import { formatDate } from "../utils/date";
 import {
   Content,
@@ -26,13 +21,18 @@ import {
   RespondedAt,
   EmptyRow,
 } from "./styles/boardPage.style";
+import {
+  QrCard,
+  QrBox,
+  QrInfo,
+  QrTitle,
+  QrDesc,
+  LinkRow,
+  LinkText,
+  OutlineButton,
+} from "./styles/createInvitationPage.style";
 
-interface Board {
-  partyName: string;
-  date: string;
-  place: string;
-  guests: GuestResponse[];
-}
+const USER_URL = import.meta.env.VITE_USER_URL ?? "http://localhost:5173";
 
 const iconProps = {
   viewBox: "0 0 24 24",
@@ -44,46 +44,58 @@ const iconProps = {
   "aria-hidden": true,
 } as const;
 
-const ICON_PATH: Record<ResponseStatus, string> = {
+const ICON_PATH: Record<RsvpStatus, string> = {
   attend: "M5 12.5l4.5 4.5L19 7.5",
   decline: "M6 6l12 12M18 6L6 18",
   pending: "M6 12h12",
 };
 
-const LABEL: Record<ResponseStatus, string> = {
+const LABEL: Record<RsvpStatus, string> = {
   attend: "참석",
   decline: "불참",
   pending: "무응답",
 };
 
-const STATUSES: ResponseStatus[] = ["attend", "decline", "pending"];
-
-function findBoard(id: string): Board | null {
-  const saved = loadInvitations().find((invitation) => invitation.id === id);
-  if (saved) {
-    return {
-      partyName: saved.partyName,
-      date: saved.date,
-      place: saved.place,
-      guests: saved.guests.map((guest) => ({
-        studentId: guest.studentId,
-        name: guest.name,
-        status: "pending",
-        respondedAt: null,
-      })),
-    };
-  }
-  return MOCK_INVITATIONS.find((invitation) => invitation.id === id) ?? null;
-}
+const STATUSES: RsvpStatus[] = ["attend", "decline", "pending"];
 
 export default function BoardPage() {
   const navigate = useNavigate();
   const { id = "" } = useParams();
-  const board = useMemo(() => findBoard(id), [id]);
+  const [board, setBoard] = useState<{
+    id: string;
+    partyName: string;
+    date: string;
+    place: string;
+    guests: ApiGuest[];
+  } | null>(null);
+  const [notFound, setNotFound] = useState(false);
+  const [copied, setCopied] = useState(false);
 
-  if (!board) return <Navigate to="/my" replace />;
+  useEffect(() => {
+    getEvent(id).then((event) => {
+      if (!event) {
+        setNotFound(true);
+        return;
+      }
+      setBoard(event);
+    });
+  }, [id]);
+
+  if (notFound) return <Navigate to="/my" replace />;
+  if (!board) return null;
 
   const counts = countByStatus(board.guests);
+  const inviteUrl = `${USER_URL}/e/${board.id}`;
+
+  const handleCopyLink = async () => {
+    try {
+      await navigator.clipboard.writeText(inviteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 1500);
+    } catch {
+      setCopied(false);
+    }
+  };
 
   return (
     <Content>
@@ -100,6 +112,28 @@ export default function BoardPage() {
           {formatDate(board.date)} · {board.place}
         </Meta>
       </Summary>
+
+      <QrCard>
+        <QrBox>
+          <QRCodeSVG value={inviteUrl} size={132} marginSize={0} />
+        </QrBox>
+        <QrInfo>
+          <QrTitle>참가자 입장 QR</QrTitle>
+          <QrDesc>
+            참가자들이 이 QR을 찍으면 학번과 이름을 입력하는 페이지로 이동해요.
+          </QrDesc>
+          <LinkRow>
+            <LinkText>{inviteUrl}</LinkText>
+            <OutlineButton type="button" onClick={handleCopyLink}>
+              <svg width={16} height={16} {...iconProps}>
+                <rect x="9" y="9" width="11" height="11" rx="2" />
+                <path d="M5 15V6a2 2 0 012-2h9" />
+              </svg>
+              {copied ? "복사됐어요" : "링크 복사"}
+            </OutlineButton>
+          </LinkRow>
+        </QrInfo>
+      </QrCard>
 
       <StatGrid>
         {STATUSES.map((status) => (
